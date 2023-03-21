@@ -1,9 +1,10 @@
+from django.db.models import Prefetch
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from apps.boards.models import Board
-from apps.boards.serializers import BoardSerializer
-from apps.core.views import CRUDSerializerClassBaseViewSet
+from boards.models import Board, Column
+from boards.serializers import BoardSerializer
+from core.views import CRUDSerializerClassBaseViewSet
 
 
 class BoardsViewSet(ModelViewSet, CRUDSerializerClassBaseViewSet):
@@ -11,4 +12,6 @@ class BoardsViewSet(ModelViewSet, CRUDSerializerClassBaseViewSet):
     retrieve_serializer = BoardSerializer
 
     def get_queryset(self):
-        return Board.objects.select_related("owner")
+        return Board.objects.prefetch_related(
+            Prefetch("columns", queryset=Column.objects.prefetch_related("tasks"))
+        )

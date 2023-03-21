@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.core.models import TimeStampedModel
+from core.models import TimeStampedModel
 
 
 class Board(TimeStampedModel):

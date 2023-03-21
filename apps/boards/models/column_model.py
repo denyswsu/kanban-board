@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.core.models import TimeStampedModel
+from core.models import TimeStampedModel
 
 
 class Column(TimeStampedModel):
@@ -15,6 +15,3 @@ class Column(TimeStampedModel):
 
     def __str__(self):
         return f"{self.board.name} - {self.name}"
-
-    def next_board_order(self):
-        return self.board.columns.count()
