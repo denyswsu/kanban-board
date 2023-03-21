@@ -63,3 +63,10 @@ CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+
+# show SQL queries
+if os.getenv("SHOW_SQL_PROFILING", "true") == "true":
+    MIDDLEWARE += (
+        "apps.core.profiling.ProfilingMiddleware",
+    )
