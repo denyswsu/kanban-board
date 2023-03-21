@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from boards.models import Board, Column
 from boards.serializers import BoardSerializer
 from core.views import CRUDSerializerClassBaseViewSet
+from tasks.models import Task
 
 
 class BoardsViewSet(ModelViewSet, CRUDSerializerClassBaseViewSet):
@@ -12,6 +13,8 @@ class BoardsViewSet(ModelViewSet, CRUDSerializerClassBaseViewSet):
     retrieve_serializer = BoardSerializer
 
     def get_queryset(self):
-        return Board.objects.prefetch_related(
-            Prefetch("columns", queryset=Column.objects.prefetch_related("tasks"))
+        return Board.objects.select_related("owner").prefetch_related(
+            Prefetch("columns", queryset=Column.objects.prefetch_related(
+                Prefetch("tasks", queryset=Task.objects.select_related("assigned_to", "owner"))
+            ))
         )
