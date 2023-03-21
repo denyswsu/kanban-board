@@ -11,45 +11,37 @@ User = get_user_model()
 
 
 def generate_random_board():
+    username = f"user_<{str(uuid4())[:30]}>"
     owner = User.objects.create_user(
-        username=f"user_<{uuid4()}>",
-        email=f"user_<{uuid4()}>@example.com",
+        username=f"user_<{username}>", email=f"user_<{username}>@example.com"
     )
-
-    board = Board(
-        name=f"Random Board <{uuid4()}>",
-        owner=owner,
-    )
+    board = Board(name=f"Random Board <{uuid4()}>", owner=owner)
     board.save()
+    generate_random_columns(board)
 
+
+def generate_random_columns(board):
     for i in range(random.randint(1, 5)):
-        
-        column = Column(
-            name=str(uuid4())[:7],
-            board=board,
-            order=i,
-        )
+        column = Column(name=f"Random Column <{str(uuid4())[:10]}>", board=board, order=i)
         column.save()
-        for j in range(random.randint(1, 5)):
-            task = Task(
-                name=f"Random Task <{uuid4()}>",
-                description=f"Random Description <{uuid4()}>",
-                column=column,
-                board=board,
-                order=j,
-                owner=owner,
-            )
-            if j % 2 == 0:
-                assigned = owner
-            else:
-                assigned = User.objects.create_user(
-                    username=f"user_<{uuid4()}>",
-                    email=f"user_<{uuid4()}>@example.com",
-                )
+        generate_random_tasks(column, board.owner)
 
 
-            task.assigned_to = assigned
-            task.save()
+def generate_random_tasks(column, owner):
+    for j in range(random.randint(1, 7)):
+        task = Task(
+            name=f"Random Task <{str(uuid4())[:20]}>",
+            description=f"Random Description: \n{uuid4()}",
+            column=column,
+            board=column.board,
+            order=j,
+            owner=owner,
+        )
+        username = f"user_<{str(uuid4())[:30]}>"
+        task.assigned_to = User.objects.create_user(
+            username=f"user_<{username}>", email=f"user_<{username}>@example.com"
+        ) if j % 2 == 0 else owner
+        task.save()
 
 
 def run():
