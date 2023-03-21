@@ -3,11 +3,11 @@ from django.utils.translation import gettext_lazy as _
 
 
 class UsersConfig(AppConfig):
-    name = "kanban_board.users"
+    name = "users"
     verbose_name = _("Users")
 
     def ready(self):
         try:
-            import kanban_board.users.signals  # noqa F401
+            import apps.users.signals  # noqa F401
         except ImportError:
             pass

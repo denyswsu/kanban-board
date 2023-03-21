@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from kanban_board.users.models import User
+from apps.users.models import User
 
 
 class TestUserAdmin:

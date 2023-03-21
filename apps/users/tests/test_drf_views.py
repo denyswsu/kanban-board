@@ -1,8 +1,8 @@
 import pytest
 from rest_framework.test import APIRequestFactory
 
-from kanban_board.users.api.views import UserViewSet
-from kanban_board.users.models import User
+from apps.users.api.views import UserViewSet
+from apps.users.models import User
 
 
 class TestUserViewSet:

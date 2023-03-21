@@ -3,8 +3,8 @@ Module for all Form Tests.
 """
 from django.utils.translation import gettext_lazy as _
 
-from kanban_board.users.forms import UserAdminCreationForm
-from kanban_board.users.models import User
+from apps.users.forms import UserAdminCreationForm
+from apps.users.models import User
 
 
 class TestUserAdminCreationForm:
