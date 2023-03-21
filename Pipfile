@@ -50,6 +50,7 @@ django-coverage-plugin = "==3.0.0"
 pytest-django = "==4.5.2"
 djangorestframework-simplejwt = "*"
 django-filter = "*"
+model-bakery = "*"
 
 [dev-packages]
 
@@ -66,3 +67,4 @@ shell = "python manage.py shell_plus"
 collectstatic = "python manage.py collectstatic --no-input"
 show_urls = "python manage.py show_urls"
 startapp = "python manage.py startapp"
+script = "python manage.py runscript"
