@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -30,6 +31,7 @@ class CreateUserSerializerCaseInsensitive(UserSerializer):
 
     def validate(self, attrs):
         self._validate_passwords(attrs)
+        self._validate_email_username_unique(attrs)
         return attrs
 
     @staticmethod
@@ -38,11 +40,13 @@ class CreateUserSerializerCaseInsensitive(UserSerializer):
             raise serializers.ValidationError(_("The two password fields didn't match."))
 
     @staticmethod
+    def _validate_email_username_unique(attrs):
+        if User.objects.filter(Q(email__iexact=attrs["email"]) | Q(username=attrs["username"])).exists():
+            raise serializers.ValidationError(_("User with this Email or Username already exists."))
+
+    @staticmethod
     def validate_email(email):
-        email = email.lower()
-        if User.objects.filter(email__iexact=email).exists():
-            raise serializers.ValidationError(_("User with this Email already exists."))
-        return email
+        return email.lower()
 
     def create(self, validated_data):
         user = User(
