@@ -3,6 +3,7 @@ Base settings to build other settings files upon.
 """
 import os
 import sys
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -354,3 +355,8 @@ SPECTACULAR_SETTINGS = {
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+SIMPLE_JWT = {
+    "TOKEN_OBTAIN_SERIALIZER": "users.serializers.CustomObtainPairSerializer",
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+}
