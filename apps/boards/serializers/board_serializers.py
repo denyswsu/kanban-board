@@ -37,3 +37,10 @@ class CreateBoardSerializer(BoardSerializer):
     def _create_default_columns(board):
         for column_data in DEFAULT_BOARD_COLUMNS:
             board.columns.create(**column_data)
+
+
+class UpdateBoardSerializer(BoardSerializer):
+    class Meta:
+        model = Board
+        fields = ("id", "name", "description", "owner", "columns")
+        read_only_fields = ("id", "owner", "columns")
