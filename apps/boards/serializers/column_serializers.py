@@ -34,6 +34,7 @@ class UpdateColumnSerializer(ColumnSerializer):
         if "order" in validated_data:
             order = validated_data.pop("order")
             ColumnService(instance).move_column(order)
+        super().update(instance, validated_data)
         return instance
 
 
