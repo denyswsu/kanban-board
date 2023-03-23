@@ -1,24 +1,32 @@
+from allauth.account.views import ConfirmEmailView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
+from dj_rest_auth.registration.views import VerifyEmailView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 
 urlpatterns = [
-    # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
-    # API base url
-    path("api/", include("apps.api.urls")),
-    # simple jwt
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    # drf-spectacular
+    path("api/", include("apps.api.urls", namespace="api")),
+    path(
+        "api/register/",
+        include("dj_rest_auth.registration.urls"),
+        name="dj-rest-auth-registration"
+    ),
+    path(
+        "api/verify-email/",
+        VerifyEmailView.as_view(),
+        name="account_email_verification_sent"
+    ),
+    path(
+        "api/verify-email/<key>/",
+        ConfirmEmailView.as_view(),
+        name="account_confirm_email",
+    ),
+    path("api/", include("dj_rest_auth.urls"), name="dj-rest-auth"),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
         "api/docs/",

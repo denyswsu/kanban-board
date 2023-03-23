@@ -30,7 +30,4 @@ class UserViewSet(
 
 class RegisterUserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = (AllowAny,)
-    # authentication_classes = []
-
     serializer_class = CreateUserSerializerCaseInsensitive
-
