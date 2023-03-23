@@ -70,3 +70,7 @@ if os.getenv("SHOW_SQL_PROFILING", "true") == "true":
     MIDDLEWARE += (
         "apps.core.profiling.ProfilingMiddleware",
     )
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+}

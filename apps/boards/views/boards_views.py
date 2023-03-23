@@ -3,8 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from boards.models import Board, Column
-from boards.serializers import BoardSerializer, CreateBoardSerializer
-from boards.serializers.board_serializers import UpdateBoardSerializer
+from boards.serializers import BoardSerializer, CreateBoardSerializer, UpdateBoardSerializer
 from core.views import CRUDSerializerClassBaseViewSet
 from tasks.models import Task
 

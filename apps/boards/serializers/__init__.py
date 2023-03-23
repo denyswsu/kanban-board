@@ -1,4 +1,7 @@
-from boards.serializers.board_serializers import BoardSerializer, CreateBoardSerializer
-from boards.serializers.column_serializers import ColumnSerializer
+from boards.serializers.board_serializers import BoardSerializer, CreateBoardSerializer, UpdateBoardSerializer
+from boards.serializers.column_serializers import ColumnSerializer, CreateColumnSerializer, UpdateColumnSerializer
 
-__all__ = ["BoardSerializer", "CreateBoardSerializer", "ColumnSerializer"]
+__all__ = [
+    "BoardSerializer", "CreateBoardSerializer", "ColumnSerializer", "CreateColumnSerializer",
+    "UpdateColumnSerializer", "UpdateBoardSerializer"
+]
