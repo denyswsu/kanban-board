@@ -6,7 +6,6 @@ from tasks.services import TaskService
 
 
 class TaskServiceTestCase(TestCase):
-
     def setUp(self) -> None:
         self.board = baker.make('boards.Board')
         for column_data in DEFAULT_BOARD_COLUMNS:
@@ -15,11 +14,21 @@ class TaskServiceTestCase(TestCase):
         self.first_column = self.board.columns.all()[0]
         self.first_column_task_count = 5
         for i in range(self.first_column_task_count):
-            self.first_column.tasks.create(name=f"Task {i}", board=self.board, order=i)
+            name = f"Task {i}" if i != 0 else "Mover1"
+            self.first_column.tasks.create(name=name, board=self.board, order=i)
         self.first_col_movable_task = self.first_column.tasks.all()[0]
 
         self.second_column = self.board.columns.all()[1]
-        self.second_col_movable_task = self.second_column.tasks.create(name=f"Move Me", board=self.board)
+        self.second_col_movable_task = self.second_column.tasks.create(name=f"Mover2", board=self.board)
+
+        """
+        | [  Backlog  ]  [   To Do   ]  [ In Progress ]  [   Done   ] |
+        | [  Mover1   ]  [  Mover2   ]  [             ]  [          ] |
+        | [  Task 1   ]  [           ]  [             ]  [          ] |
+        | [  Task 2   ]  [           ]  [             ]  [          ] |
+        | [  Task 3   ]  [           ]  [             ]  [          ] |
+        | [  Task 4   ]  [           ]  [             ]  [          ] |
+        """
 
     def test_get_new_column_order(self):
         expected_columns_count = len(DEFAULT_BOARD_COLUMNS)
