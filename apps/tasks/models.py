@@ -12,6 +12,8 @@ class Task(TimeStampedModel):
     column = models.ForeignKey("boards.Column", related_name="tasks", on_delete=models.CASCADE)
     board = models.ForeignKey("boards.Board", related_name="tasks", on_delete=models.CASCADE)
     order = models.PositiveIntegerField(default=0)
+    is_expired = models.BooleanField(default=False)
+    deadline = models.DateTimeField(null=True)
     # TODO:
     # labels
     # comments

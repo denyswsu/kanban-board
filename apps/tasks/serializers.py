@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import transaction
 from rest_framework import serializers
 
@@ -35,7 +37,7 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ("id", "name", "column", "order", "description", "assigned_to")
+        fields = ("id", "name", "column", "order", "description", "assigned_to", "deadline")
         read_only_fields = ("id",)
 
     def validate(self, data):
@@ -52,11 +54,17 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
         if order > new_task_order:
             data["order"] = new_task_order
 
+    def validate_deadline(self, deadline: datetime):
+        if deadline < datetime.utcnow():
+            raise serializers.ValidationError("Deadline cannot be in the past.")
+
+        self.instance.is_expired = False
+        return deadline
+
     @transaction.atomic
     def update(self, instance, validated_data):
+        column = validated_data.pop("column", instance.column)
         if "order" in validated_data:
-            order = validated_data.pop("order")
-            column = validated_data.pop("column", instance.column)
-            TaskService(instance).move_task(order, column)
+            TaskService(instance).move_task(validated_data.pop("order"), column)
         super().update(instance, validated_data)
         return instance

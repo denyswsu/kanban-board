@@ -13,7 +13,7 @@ class TaskService:
 
     @transaction.atomic
     def move_task(self, new_order: int, column: Column, **kwargs):
-        """Move task to new order and shift other task accordingly"""
+        """Move task within column or to another column, and shift tasks accordingly"""
         if self.task.column == column:
             self.move_task_in_column(new_order)
         else:
@@ -23,7 +23,6 @@ class TaskService:
             self.task.save()
 
     def move_task_in_column(self, new_order: int):
-        """Move task to new order and shift other task accordingly"""
         if new_order > self.current_order:
             self.move_down(new_order)
         else:
@@ -41,7 +40,7 @@ class TaskService:
         ).update(order=F("order") + 1)
         self.task.order = new_order
 
-    def move_task_to_column(self, new_order, new_column):
+    def move_task_to_column(self, new_order: int , new_column: Column):
         # remove task from current column
         self.task.column.tasks.filter(
             order__gt=self.current_order
