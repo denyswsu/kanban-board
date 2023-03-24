@@ -12,8 +12,8 @@ class ColumnsViewSet(mixins.CreateModelMixin,
                      CRUDSerializerClassBaseViewSet):
     queryset = Column.objects.all()
 
-    update_serializer = UpdateColumnSerializer
     create_serializer = CreateColumnSerializer
+    update_serializer = UpdateColumnSerializer
 
     def perform_destroy(self, instance):
         ColumnService(instance).delete_column()

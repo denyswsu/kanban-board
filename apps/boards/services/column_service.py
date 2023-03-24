@@ -10,6 +10,7 @@ class ColumnService:
         self.column = column
         self.current_order = column.order
 
+    @transaction.atomic
     def move_column(self, new_order: int, **kwargs):
         """Move column to new order and shift other columns accordingly"""
         if new_order > self.current_order:
@@ -20,14 +21,12 @@ class ColumnService:
         if kwargs.get("save", False):
             self.column.save()
 
-    @transaction.atomic
     def move_forward(self, new_order: int):
         self.column.board.columns.filter(
             order__gt=self.current_order, order__lte=new_order
         ).update(order=F("order") - 1)
         self.column.order = new_order
 
-    @transaction.atomic
     def move_backward(self, new_order: int):
         self.column.board.columns.filter(
             order__gte=new_order, order__lt=self.current_order

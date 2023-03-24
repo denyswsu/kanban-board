@@ -12,7 +12,6 @@ class Column(TimeStampedModel):
 
     class Meta:
         ordering = ("order",)
-        # unique_together = ("board", "order")
         constraints = [
             UniqueConstraint(
                 name='unique_columns_order',
@@ -23,3 +22,11 @@ class Column(TimeStampedModel):
 
     def __str__(self):
         return f"{self.board.name} - {self.name}"
+
+    def get_new_task_order(self):
+        last_task_order = self.get_last_task_order()
+        return last_task_order + 1 if last_task_order is not None else 0
+
+    def get_last_task_order(self):
+        last_task = self.tasks.last()
+        return last_task.order if last_task else None

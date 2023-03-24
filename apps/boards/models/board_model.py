@@ -13,7 +13,7 @@ class Board(TimeStampedModel):
 
     def get_new_column_order(self):
         last_column_order = self.get_last_column_order()
-        return last_column_order + 1 if last_column_order else 0
+        return last_column_order + 1 if last_column_order is not None else 0
 
     def get_last_column_order(self):
         last_column = self.columns.last()

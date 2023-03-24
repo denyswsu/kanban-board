@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from boards.models import Column
-from boards.services.column_service import ColumnService
+from boards.services import ColumnService
 from tasks.serializers import TaskSerializer
 
 
@@ -24,8 +24,8 @@ class UpdateColumnSerializer(ColumnSerializer):
         read_only_fields = ("id", "board", "tasks")
 
     def validate_order(self, order):
-        last_column_order = self.instance.board.get_last_column_order()
-        if last_column_order and order > last_column_order:
+        last_column_order = self.instance.board.get_last_column_order() or 0
+        if order > last_column_order:
             order = last_column_order
         return order
 

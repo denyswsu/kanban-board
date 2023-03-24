@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from boards.models import Board, Column
+from tasks.models import Task
 
 
 class ColumnInline(admin.TabularInline):
@@ -13,7 +14,12 @@ class BoardAdmin(admin.ModelAdmin):
     inlines = [ColumnInline]
 
 
+class TaskInline(admin.TabularInline):
+    model = Task
+
+
 @admin.register(Column)
 class ColumnAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "board", "order")
     list_filter = ("board",)
+    inlines = [TaskInline]
