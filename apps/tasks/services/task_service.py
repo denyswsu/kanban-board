@@ -40,7 +40,7 @@ class TaskService:
         ).update(order=F("order") + 1)
         self.task.order = new_order
 
-    def move_task_to_column(self, new_order: int , new_column: Column):
+    def move_task_to_column(self, new_order: int, new_column: Column):
         # remove task from current column
         self.task.column.tasks.filter(
             order__gt=self.current_order
