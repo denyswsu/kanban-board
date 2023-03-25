@@ -9,6 +9,7 @@ class Column(TimeStampedModel):
     description = models.TextField(blank=True)
     order = models.PositiveIntegerField(default=0)
     board = models.ForeignKey("boards.Board", related_name="columns", on_delete=models.CASCADE)
+    is_completed_column = models.BooleanField(default=False)
 
     class Meta:
         ordering = ("order",)

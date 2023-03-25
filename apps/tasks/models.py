@@ -14,6 +14,7 @@ class Task(TimeStampedModel):
     order = models.PositiveIntegerField(default=0)
     is_expired = models.BooleanField(default=False)
     deadline = models.DateTimeField(null=True)
+    completed = models.BooleanField(default=False)
     # TODO:
     # labels
     # comments

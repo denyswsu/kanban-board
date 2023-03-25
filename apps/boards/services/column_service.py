@@ -40,3 +40,14 @@ class ColumnService:
             order__gt=self.current_order
         ).update(order=F("order") - 1)
         self.column.delete()
+
+    @transaction.atomic
+    def make_column_completed(self, **kwargs):
+        """Make only one column in board as completed"""
+        self.column.is_completed_column = True
+        self.column.board.columns.filter(
+            is_completed_column=True
+        ).exclude(id=self.column.id).update(is_completed_column=False)
+
+        if kwargs.get("save", False):
+            self.column.save()
