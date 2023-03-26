@@ -22,6 +22,11 @@ class UpdateColumnSerializer(ColumnSerializer):
         model = Column
         fields = ("id", "name", "board", "order", "tasks", "description", "is_completed_column")
         read_only_fields = ("id", "board", "tasks")
+        extra_kwargs = {
+            "is_completed_column": {
+                "validators": []
+            }
+        }
 
     def validate_order(self, order):
         last_column_order = self.instance.board.get_last_column_order() or 0

@@ -38,11 +38,19 @@ class Column(TimeStampedModel):
         return last_task.order if last_task else None
 
     def save(self, *args, **kwargs):
-        self.make_completed_column_unique()
+        self.set_unique_completed_column()
+        self.complete_tasks_if_is_completed_column()
         super().save(*args, **kwargs)
 
-    def make_completed_column_unique(self):
+    def set_unique_completed_column(self):
         if self.is_completed_column is False:
             self.is_completed_column = None
+        elif self.is_completed_column:
+            self.board.columns.filter(is_completed_column=True).exclude(id=self.id).update(is_completed_column=None)
+
+    def complete_tasks_if_is_completed_column(self):
+        """save used instead of update to trigger notify_task_completed()"""
         if self.is_completed_column:
-            self.board.columns.filter(is_completed_column=True).update(is_completed_column=None)
+            for task in self.tasks.all():
+                task.completed = True
+                task.save()
