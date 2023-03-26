@@ -24,11 +24,13 @@ class EmailService:
         self.add_attachments(email, attachments)
         email.send()
 
-    def add_html_message(self, email, html_message):
+    @staticmethod
+    def add_html_message(email, html_message):
         if html_message:
             email.content_subtype = "html"
             email.body = html_message
 
-    def add_attachments(self, email, attachments):
+    @staticmethod
+    def add_attachments(email, attachments):
         for attachment in attachments or []:
             email.attach_file(attachment)

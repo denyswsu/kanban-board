@@ -29,7 +29,8 @@ class CreateTaskSerializer(serializers.ModelSerializer):
         column = validated_data["column"]
         validated_data["order"] = column.get_new_task_order()
         task = Task.objects.create(**validated_data)
-        TaskService(task).notify_task_assigned(validated_data.get("assigned_to"), self.context["request"].user)
+        if assigned_to := validated_data.get("assigned_to"):
+            TaskService(task).notify_task_assigned(assigned_to, self.context["request"].user)
         return task
 
 

@@ -67,9 +67,7 @@ class TaskService:
 
     # TODO: smart notify not only assigned_to but also owner/members(todo)
     def notify_task_assigned(self, assigned_to: User, assigned_by: User):
-        if assigned_to:
-            # TODO
-            print(f"Notify {self.task.users_to_notify([assigned_to])} that {assigned_by} assigned {self.task} to him")
+        print(f"Notify {self.task.users_to_notify([assigned_to])} that {assigned_by} assigned {self.task} to him")
 
     def notify_task_updated(self, updated_fields: dict, updated_by: User):
         if updated_fields:
@@ -78,4 +76,8 @@ class TaskService:
 
     def notify_task_completed(self):
         # TODO
-        print(f"Notify {self.task.users_to_notify()} that task {self.task} was completed\n\n\n\n\n\n\n\n")
+        print(f"Notify {self.task.users_to_notify()} that task {self.task} was completed")
+
+    def notify_task_expired(self):
+        # TODO
+        print(f"Notify {self.task.users_to_notify()} that task {self.task} was expired at {self.task.deadline}")
