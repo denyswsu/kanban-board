@@ -34,9 +34,6 @@ class UpdateColumnSerializer(ColumnSerializer):
         if "order" in validated_data:
             order = validated_data.pop("order")
             ColumnService(instance).move_column(order)
-        is_completed_column = validated_data.pop("is_completed_column", False)
-        if is_completed_column:
-            ColumnService(instance).make_column_completed()
         super().update(instance, validated_data)
         return instance
 
@@ -51,9 +48,6 @@ class CreateColumnSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         board = validated_data["board"]
-        is_completed_column = validated_data.pop("is_completed_column", False)
         validated_data["order"] = board.get_new_column_order()
         column = Column.objects.create(**validated_data)
-        if is_completed_column:
-            ColumnService(column).make_column_completed()
         return column

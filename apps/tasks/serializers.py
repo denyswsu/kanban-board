@@ -27,7 +27,8 @@ class CreateTaskSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         column = validated_data["column"]
-        validated_data["board"] = column.board
+        # TODO: done in the save method, check if it's working
+        # validated_data["board"] = column.board
         validated_data["order"] = column.get_new_task_order()
         return Task.objects.create(**validated_data)
 

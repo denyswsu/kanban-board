@@ -15,10 +15,7 @@ class Task(TimeStampedModel):
     is_expired = models.BooleanField(default=False)
     deadline = models.DateTimeField(null=True)
     completed = models.BooleanField(default=False)
-    # TODO:
-    # labels
-    # comments
-    # attachments
+    # TODO: labels, comments, attachments
 
     class Meta:
         ordering = ("order",)
@@ -32,3 +29,17 @@ class Task(TimeStampedModel):
 
     def __str__(self):
         return f"{self.board.name} - {self.column.name} - {self.name}"
+
+    def save(self, *args, **kwargs):
+        self.board = self.column.board
+        self.check_if_expired()
+        self.check_if_completed()
+        super().save(*args, **kwargs)
+
+    def check_if_expired(self):
+        if self.deadline and self.deadline < self.created_at:
+            self.is_expired = True
+
+    def check_if_completed(self):
+        if self.column.is_completed_column:
+            self.completed = True
