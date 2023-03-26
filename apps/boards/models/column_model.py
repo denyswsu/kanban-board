@@ -1,4 +1,4 @@
-from django.db import models, transaction
+from django.db import models
 from django.db.models import UniqueConstraint, Deferrable
 
 from core.models import TimeStampedModel
