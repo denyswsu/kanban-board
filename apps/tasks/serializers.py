@@ -27,9 +27,11 @@ class CreateTaskSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         column = validated_data["column"]
-        validated_data["board"] = column.board
         validated_data["order"] = column.get_new_task_order()
-        return Task.objects.create(**validated_data)
+        task = Task.objects.create(**validated_data)
+        if assigned_to := validated_data.get("assigned_to"):
+            TaskService(task).notify_task_assigned(assigned_to, self.context["request"].user)
+        return task
 
 
 class UpdateTaskSerializer(serializers.ModelSerializer):
@@ -62,9 +64,17 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
         return deadline
 
     @transaction.atomic
-    def update(self, instance, validated_data):
-        column = validated_data.pop("column", instance.column)
+    def update(self, task, validated_data):
+        user = self.context["request"].user
+        column = validated_data.pop("column", task.column)
         if "order" in validated_data:
-            TaskService(instance).move_task(validated_data.pop("order"), column)
-        super().update(instance, validated_data)
-        return instance
+            TaskService(task).move_task(validated_data.pop("order"), column)
+
+        if "assigned_to" in validated_data and validated_data["assigned_to"] != task.assigned_to:
+            TaskService(task).notify_task_assigned(validated_data["assigned_to"], user)
+        else:
+            updated_fields = {f: v for f, v in validated_data.items() if v != getattr(task, f)}
+            TaskService(task).notify_task_updated(updated_fields, user)
+
+        super().update(task, validated_data)
+        return task

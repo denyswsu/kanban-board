@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Deferrable, UniqueConstraint
 
 from core.models import TimeStampedModel
+from tasks.services import TaskService
 
 
 class Task(TimeStampedModel):
@@ -14,10 +15,8 @@ class Task(TimeStampedModel):
     order = models.PositiveIntegerField(default=0)
     is_expired = models.BooleanField(default=False)
     deadline = models.DateTimeField(null=True)
-    # TODO:
-    # labels
-    # comments
-    # attachments
+    completed = models.BooleanField(default=False)
+    # TODO: labels, comments, attachments
 
     class Meta:
         ordering = ("order",)
@@ -31,3 +30,23 @@ class Task(TimeStampedModel):
 
     def __str__(self):
         return f"{self.board.name} - {self.column.name} - {self.name}"
+
+    def save(self, *args, **kwargs):
+        self.board = self.column.board
+        self.set_is_expired()
+        self.notify_if_task_completed()
+        super().save(*args, **kwargs)
+
+    def set_is_expired(self):
+        if self.deadline and self.deadline < self.created_at:
+            self.is_expired = True
+
+    def notify_if_task_completed(self):
+        if self.completed or self.column.is_completed_column:
+            TaskService(self).notify_task_completed()
+
+    def users_to_notify(self, additional_users: list = None):
+        users = [self.assigned_to, self.owner]
+        if additional_users:
+            users += additional_users
+        return users

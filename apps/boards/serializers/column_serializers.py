@@ -20,8 +20,13 @@ class UpdateColumnSerializer(ColumnSerializer):
 
     class Meta:
         model = Column
-        fields = ("id", "name", "board", "order", "tasks")
+        fields = ("id", "name", "board", "order", "tasks", "description", "is_completed_column")
         read_only_fields = ("id", "board", "tasks")
+        extra_kwargs = {
+            "is_completed_column": {
+                "validators": []
+            }
+        }
 
     def validate_order(self, order):
         last_column_order = self.instance.board.get_last_column_order() or 0
@@ -43,10 +48,11 @@ class CreateColumnSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Column
-        fields = ("id", "name", "board", "tasks")
+        fields = ("id", "name", "board", "tasks", "description", "is_completed_column")
         read_only_fields = ("id", "order", "tasks")
 
     def create(self, validated_data):
         board = validated_data["board"]
         validated_data["order"] = board.get_new_column_order()
-        return Column.objects.create(**validated_data)
+        column = Column.objects.create(**validated_data)
+        return column
